@@ -52,11 +52,11 @@ pool.on('connect', () => {
  */
 
 
- const createMatiereTable = () => {
-     const matiereCreateQuery = `CREATE TABLE IF  NOT EXISTS matiere
+ const createMaterielTable = () => {
+     const materielCreateQuery = `CREATE TABLE IF  NOT EXISTS materiel
      (code VARCHAR(100) PRIMARY KEY,
      description TEXT NOT NULL)`;
-     pool.query(matiereCreateQuery)
+     pool.query(materielCreateQuery)
         .then((res) => {
             console.log(res);
             pool.end();
@@ -69,14 +69,14 @@ pool.on('connect', () => {
 
 
 /**
- * Drop Matiere Table
+ * Drop Matriel Table
  */
 
 
  
-const dropMatiereTable = () => {
-    const matiereDropQuery = 'DROP TABLE IF EXISTS matiere';
-    pool.query(matiereDropQuery)
+const dropMaterielTable = () => {
+    const materielDropQuery = 'DROP TABLE IF EXISTS materiel';
+    pool.query(materielDropQuery)
         .then((res) => {
             console.log(res);
             pool.end();
@@ -96,14 +96,14 @@ const dropMatiereTable = () => {
 
  const createPretTable = () => {
      const pretCreateQuery = `CREATE TABLE IF NOT EXISTS pret 
-     (  id SERIAL,
-        enseignant_id INTEGER REFERENCES enseignant(id) ON DELETE CASCADE,
-        materiel_code VARCHAR(100) REFERENCES materiel(code) ON DELETE CASCADE,
+     (  
+        id INTEGER REFERENCES enseignant(id) ON DELETE CASCADE,
+        code VARCHAR(100) REFERENCES materiel(code) ON DELETE CASCADE,
         date_pret DATE NOT NULL,
         date_retour DATE,
         date_retour_effectif DATE,
-        quantite INTEGER NOT NULL,
-        PRIMARY KEY(id, enseignant_id, materiel_code))`;
+        quantite INTEGER NOT NULL CHECK (quantite > 0),
+        PRIMARY KEY(id, code))`;
 
         pool.query(pretCreateQuery)
             .then((res) => {
@@ -143,7 +143,7 @@ const dropPretTable = () => {
 
   const createAllTables = () => {
       createEnseignantTable();
-      createMatiereTable();
+      createMaterielTable();
       createPretTable();
   };
 
@@ -154,7 +154,7 @@ const dropPretTable = () => {
 
    const dropAllTables = () => {
        dropEnseignantTable();
-       dropMatiereTable();
+       dropMaterielTable();
        dropPretTable();
    };
 /************************************************************************************************** */
